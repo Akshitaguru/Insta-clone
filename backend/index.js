@@ -7,6 +7,25 @@ import userRoute from "./routes/user.route.js";
 import postRoute from "./routes/post.route.js";
 import messageRoute from "./routes/message.route.js";
 
+import jwt from 'jsonwebtoken';
+
+const authenticateToken = (req, res, next) => {
+  const token = req.cookies.token || req.headers['x-access-token'];
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    req.user = decoded;
+    next();
+  });
+};
+
+
+
 dotenv.config({});
 
 const app = express();
@@ -25,7 +44,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded({ extented: true }));
 const corsOptions = {
-  origin: "https://localhost:5173",
+  origin: "http://localhost:5173",
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -39,3 +58,5 @@ app.listen(PORT, () => {
   connectDB();
   console.log(`Server listen at port ${PORT}`); // 1 k side me comma wala use hoga agar $ use karrhe ho toh
 });
+
+app.use(authenticateToken);
