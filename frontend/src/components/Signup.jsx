@@ -4,6 +4,8 @@ import {toast} from 'sonner';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const Signup = () => {
     const [input, setInput] = useState({
@@ -11,6 +13,10 @@ const Signup = () => {
         email:"",
         password:""
     });
+
+      const [loading, setLoading] = useState(false);
+       const navigate = useNavigate();
+  
     const changeEventHandler = (e) => {
         setInput({...input, [e.target.name]:e.target.value});
     }
@@ -20,6 +26,7 @@ const Signup = () => {
         e.preventDefault();
         console.log(input);
         try {
+          setLoading(true);
           const res = await axios.post('http://localhost:8000/api/v1/user/register',input, {
            
             headers:{
@@ -28,51 +35,26 @@ const Signup = () => {
             withCredentials:true
           });
           if(res.data.success) {
+            navigate("/login");
             toast.success(res.data.message);
-      
+             setInput({
+              username: "",
+              email: "",
+              password: ""
+             });
           }
- 
         } 
         catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
            
+        }finally{
+          setLoading(false);
         }
     }
 
 
-  //   const signupHandler = async (e) => {
-  //     e.preventDefault();
-  //     console.log(input);
 
-  //     const token = Cookies.get('token');
-  //      const headers = {
-  //   Authorization: `Bearer ${token}`,
-  // };
-
-  //     try {
-  //       const res = await axios.post('http://localhost:8000/api/v1/user/register', input, {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //       });
-  //       console.log('Response:', res);
-  //       console.log('Response data:', res.data);
-  //       if (res.data.success) {
-  //         console.log('Token:', res.data.token);
-  //         const token = res.data.token; // Assuming the token is returned in the response
-  //         // Store the token in cookies or local storage
-  //         document.cookie = `token=${token}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
-  //         // or
-  //         localStorage.setItem('token', token);
-  //         toast.success(res.data.message);
-  //       } else {
-  //         console.log('Error:', res.data);
-  //       }
-  //     } catch (error) {
-  //       console.log('Error:', error);
-  //     }
-  //   };
 
   return (
     <div className="flex items-center w-screen h-screen justify-center">
@@ -117,12 +99,22 @@ const Signup = () => {
             className = "focus-visible:ring-transparent my-2"/>
         </div>
 
-           <Button type="submit">
-            Signup
-           </Button>
+        {
+                    loading ? (
+                        <Button>
+                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                            Please wait
+                        </Button>
+                    ) : (
+                        <Button type='submit'>Signup</Button>
+                    )
+                }
+           <spam className='text-center'>Already have an account? <Link to="/login" className="text-blue-600">Login</Link></spam>
       </form>
     </div>
   );
 }
 
 export default Signup;
+
+

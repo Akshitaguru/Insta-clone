@@ -6,26 +6,26 @@ import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   try {
-    const { username, email, passward } = req.body;
-    if (!username || !email || !passward) {
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
       return res.status(401).json({
         message: "Something is missing, please check!",
         success: false,
       });
     }
-    let user = await User.findOne({ email });
+    const user = await User.findOne({ email });
     if (user) {
       return res.status(401).json({
         message: "Try different email.",
         success: false,
       });
     }
-    const hashedPassward = await bcrypt.hash(passward, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
       username,
       email,
-      passward: hashedPassward,
+      password: hashedPassword,
     });
     return res.status(201).json({
       message: "Account created successfully.",
@@ -38,68 +38,72 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, passward } = req.body;
-    if (!email || !passward) {
-      return res.status(401).json({
-        message: "Something is missing, please check!",
-        success: false,
-      });
-    }
-    let user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({
-        message: "Incorrect email or passward.",
-        success: false,
-      });
-    }
-    const isPasswardMatch = await bcrypt.compare(passward, user.passward);
-    if (!isPasswardMatch) {
-      return res.status(401).json({
-        message: "Incorrect email or passward.",
-        success: false,
-      });
-    }
+      const { email, password } = req.body;
 
-    const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-      expiresIn: "1d",
-    });
+      // Check for missing fields
+      if (!email || !password) {
+          return res.status(400).json({
+              message: "Email and password are required.",
+              success: false,
+          });
+      }
 
-    //populate each post if in the posts array
-    const populatedPosts = await Promise.all(
-      user.posts.map( async (postId) => {
-          const post = await Post.findById(postId);
-          if(post.author.equals(user._id)){
-              return post;
-          }
-          return null;
-      })
-  )
-    user = {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      profilePicture: user.profilePicture,
-      bio: user.bio,
-      followers: user.followers,
-      following: user.following,
-      posts: populatedPosts
-    };
+      // Find the user by email
+      let user = await User.findOne({ email });
+      console.log("User found:", user); // Log the user object
 
-    return res
-      .cookie("token", token, {
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: 1 * 24 * 60 * 60 * 1000,
-      })
-      .json({
-        message: `Welcome back ${user.username}`,
-        success: true,
-        user,
+      // Ensure user exists and has a password
+      if (!user || !user.password) {
+          return res.status(401).json({
+              message: "Incorrect email or password",
+              success: false,
+          });
+      }
+
+      console.log("Stored password hash:", user.password); // Log the stored hash
+
+      // Compare passwords
+      const isPasswordMatch = await bcrypt.compare(password, user.password);
+      console.log("Is password match:", isPasswordMatch); // Log the comparison result
+
+      if (!isPasswordMatch) {
+          return res.status(401).json({
+              message: "Incorrect email or password",
+              success: false,
+          });
+      }
+
+      // Create a JWT token
+      const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
+
+      // Prepare user data to return
+      const userData = {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          profilePicture: user.profilePicture,
+          bio: user.bio,
+          followers: user.followers,
+          following: user.following,
+          posts: user.posts, // Assuming you want to send the user's posts
+      };
+
+      // Send the response with the token as a cookie
+      return res.cookie('token', token, { httpOnly: true, sameSite: 'strict', maxAge: 1 * 24 * 60 * 60 * 1000 }).json({
+          message: `Welcome back ${user.username}`,
+          success: true,
+          user: userData
       });
+
   } catch (error) {
-    console.log(error);
+      console.error("Login error:", error); // Log the error
+      return res.status(500).json({
+          message: "Internal server error",
+          success: false,
+      });
   }
 };
+
 
 export const logout = async (_, res) => {
   try {
