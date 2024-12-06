@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import axios from "axios";
 import {
   Heart,
   Home,
@@ -35,19 +36,21 @@ const Leftsidebar = () => {
   const navigate = useNavigate();
 
 
-const logouthandler = async() => {
-  try{
-        const res = await axios.get('http://localhost:8000/api/v1/user/logout', {withCrendentials:true});
-        if(res.data.success)
-        {
-          navigate("/login");
-          toast.success(res.data.message);
-        }
+  const logouthandler = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/api/v1/user/logout', { withCredentials: true });
+      console.log('Logout response:', res); // Add this line to log the response
+      if (res && res.data && res.data.success) { // Add checks for res and res.data
+        navigate("/login");
+        toast.success(res.data.message);
+      } else {
+        console.error('Logout failed:', res); // Log an error if the response is not successful
+      }
+    } catch (error) {
+      console.error('Logout error:', error); // Log the error
+      toast.error(error.response.data.message);
+    }
   }
-  catch (error)  {
-    toast.error(error.response.data.message);
-  }
-}
 
   const sidebarHandler = (textType) => {
     if(textType === 'Logout')logouthandler();
