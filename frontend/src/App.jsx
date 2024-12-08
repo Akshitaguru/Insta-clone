@@ -2,8 +2,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Signup from './components/Signup'
 import Login from './components/Login'
 import MainLayout from './components/MainLayout'
-import { Home } from 'lucide-react'
+
 import Profile from './components/Profile'
+import Home from './components/Home'
 
 
 
