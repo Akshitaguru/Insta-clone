@@ -1,16 +1,16 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import Leftsidebar from './Leftsidebar'
+import Leftsidebar from './Leftsidebar';
+import { Outlet } from 'react-router-dom';
 
 const MainLayout = () => {
   return (
-    <div>
-     <Leftsidebar/>
-      <div>
-        <Outlet/>
+    <div className="flex">
+      <Leftsidebar />
+      <div className="flex-grow">
+        {/* This renders child routes */}
+        <Outlet />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MainLayout
+export default MainLayout;
