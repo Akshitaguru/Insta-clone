@@ -13,36 +13,24 @@ import {
 import React from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux'
+import { setAuthUser } from "@/redux/authSlice";
 
-const sidebarItems = [
-  { icon: <Home />, text: "Home" },
-  { icon: <Search />, text: "Search" },
-  { icon: <TrendingUp />, text: "Explore" },
-  { icon: <MessageCircle />, text: "Messages" },
-  { icon: <Heart />, text: "Notifications" },
-  { icon: <PlusSquare />, text: "Create" },
-  {
-    icon: (
-      <Avatar className="w-6 h-6">
-        <AvatarImage src="https://github.com/shadcn.png" />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-    ),
-    text: "Profile",
-  },
-  { icon: <LogOut />, text: "Logout" },
-];
+
 
 const Leftsidebar = () => {
   const navigate = useNavigate();
-
+ const { user } = useSelector(store=>store.auth);
+ const dispatch = useDispatch();
 
   const logouthandler = async () => {
     try {
       const res = await axios.get('http://localhost:8000/api/v1/user/logout', { withCredentials: true });
       console.log('Logout response:', res); // Add this line to log the response
       if (res && res.data && res.data.success) { // Add checks for res and res.data
+        dispatch(setAuthUser(null));
         navigate("/login");
+
         toast.success(res.data.message);
       } else {
         console.error('Logout failed:', res); // Log an error if the response is not successful
@@ -66,6 +54,26 @@ const Leftsidebar = () => {
         navigate("/chat");
     }
 }
+
+const sidebarItems = [
+  { icon: <Home />, text: "Home" },
+  { icon: <Search />, text: "Search" },
+  { icon: <TrendingUp />, text: "Explore" },
+  { icon: <MessageCircle />, text: "Messages" },
+  { icon: <Heart />, text: "Notifications" },
+  { icon: <PlusSquare />, text: "Create" },
+  {
+    icon: (
+      <Avatar className="w-6 h-6">
+        <AvatarImage src={user?.profilePicture}  alt="@shadcn"/>
+        <AvatarFallback>CN</AvatarFallback>
+      </Avatar>
+    ),
+    text: "Profile",
+  },
+  { icon: <LogOut />, text: "Logout" },
+];
+
   return (
     <div className="fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen">
       <div className="flex flex-col">
