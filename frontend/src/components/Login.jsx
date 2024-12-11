@@ -5,6 +5,8 @@ import { Input } from "./ui/input";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "@/redux/authSlice";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -14,6 +16,7 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -39,7 +42,8 @@ const Login = () => {
       // Log response for debugging
       console.log("Login Response:", res.data);
   
-      if (res?.data?.success) {
+      if (res.data.success) {
+        dispatch(setAuthUser(res.data.user));
         navigate("/")
         toast.success(res.data.message);
         setInput({
