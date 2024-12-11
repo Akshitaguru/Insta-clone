@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { setAuthUser } from "@/redux/authSlice";
+import { useState } from "react";
+import CreatePost from "./CreatePost";
 
 
 
@@ -22,6 +24,7 @@ const Leftsidebar = () => {
   const navigate = useNavigate();
  const { user } = useSelector(store=>store.auth);
  const dispatch = useDispatch();
+ const [open, setOpen] = useState(false);
 
   const logouthandler = async () => {
     try {
@@ -41,11 +44,12 @@ const Leftsidebar = () => {
     }
   }
 
+ 
   const sidebarHandler = (textType) => {
     if (textType === 'Logout') {
         logouthandler();
     } else if (textType === "Create") {
-        setOpen(true);
+      setOpen(true);
     } else if (textType === "Profile") {
         navigate(`/profile/${user?._id}`);
     } else if (textType === "Home") {
@@ -89,6 +93,9 @@ const sidebarItems = [
           })}
         </div>
       </div>
+
+<CreatePost open={open} setOpen={setOpen} />
+
     </div>
   );
 };
