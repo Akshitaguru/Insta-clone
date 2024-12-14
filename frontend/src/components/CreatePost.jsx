@@ -1,8 +1,12 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader } from "./ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Textarea } from "./ui/textarea";
+import { Button } from "./ui/button";
+import { useRef } from "react";
 
 const CreatePost = ({ open, setOpen }) => {
+  const imageRef = useRef();
   const createPostHandler = async (e) => {
     e.preventDefault();
  
@@ -32,6 +36,11 @@ const CreatePost = ({ open, setOpen }) => {
               </span>
             </div>
         </div>
+        <Textarea className="focus-visible:ring-transparent border-none" placeholder="Write a caption..."/>
+        <input ref={imageRef} type='file' className="hidden"/>
+        <Button onClick={() => imageRef.current.click()} className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf]">
+          Select from computer
+        </Button>
       </DialogContent>
     </Dialog>
   );
