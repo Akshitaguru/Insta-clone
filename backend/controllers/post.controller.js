@@ -29,7 +29,7 @@ export const addNewPost = async (req, res) => {
     const user = await User.findById(authorId);
     if(user)
     {
-        user.post.push(post._id);
+        user.posts.push(post._id);
         await user.save();
     }
     
@@ -42,7 +42,7 @@ export const addNewPost = async (req, res) => {
     })
 
   } catch (error) {
-    console.Consolelog(error);
+    console.log(error);
   }
 }
 

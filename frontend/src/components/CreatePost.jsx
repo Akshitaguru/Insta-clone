@@ -7,7 +7,8 @@ import { useRef } from "react";
 import { useState } from "react";
 import { readFileAsDataURL } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-
+import axios from "axios";
+import { toast } from "sonner";
 const CreatePost = ({ open, setOpen }) => {
   const imageRef = useRef();
   const [file, setFile] = useState("");
@@ -25,10 +26,29 @@ const CreatePost = ({ open, setOpen }) => {
   };
 
   const createPostHandler = async (e) => {
-    e.preventDefault();
-        console.log(file, caption);
+    const formData = new FormData();
+    formData.append("caption", caption);
+    if (imagePreview) formData.append("image", file);
     try {
-    } catch (error) {}
+      setLoading(true);
+      const res = await axios.post(
+        "http://localhost:8000/api/v1/post/addpost",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+      if (res.data.message) {
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Dialog open={open}>
@@ -46,13 +66,19 @@ const CreatePost = ({ open, setOpen }) => {
             <span className="text-gray-600 text-xs">Bio here...</span>
           </div>
         </div>
-        <Textarea value={caption} onChange={(e) => setCaption(e.target.value)}
+        <Textarea
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
           className="focus-visible:ring-transparent border-none"
           placeholder="Write a caption..."
         />
         {imagePreview && (
           <div className="w-full h-64 flex items-center justify-center">
-            <img src={imagePreview} alt="preview_img" className="object-cover h-full w-full rounded-md"/>
+            <img
+              src={imagePreview}
+              alt="preview_img"
+              className="object-cover h-full w-full rounded-md"
+            />
           </div>
         )}
         <input
@@ -67,19 +93,21 @@ const CreatePost = ({ open, setOpen }) => {
         >
           Select from Computer
         </Button>
-        {
-          imagePreview && (
-            loading ? (
-              <Button>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                Please wait
-              </Button>
-            ) : (
-              <Button onClick={createPostHandler} type="submit" className="w-full">Post</Button>
-            )
-          )
-        }
-       
+        {imagePreview &&
+          (loading ? (
+            <Button>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>
+          ) : (
+            <Button
+              onClick={createPostHandler}
+              type="submit"
+              className="w-full"
+            >
+              Post
+            </Button>
+          ))}
       </DialogContent>
     </Dialog>
   );
