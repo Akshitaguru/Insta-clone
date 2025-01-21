@@ -8,9 +8,9 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
 import { useState } from "react";
 
-const Post = () => {
+const Post = ({post}) => {
   const [text, setText] = useState("");
-  const [open, setOpen] = useState("false");
+  const [open, setOpen] = useState(false);
 
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -54,7 +54,7 @@ const Post = () => {
       </div>
       <img
         className="rounded-sm my-2 w-full aspect-square object-cover"
-        src="https://images.unsplash.com/photo-1732919258529-44f50088aefd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw3fHx8ZW58MHx8fHx8"
+        src={post.image}
         alt="post_img "
       />
 
@@ -73,7 +73,7 @@ const Post = () => {
       <span className="font-medium block mb-2">1k likes</span>
       <p>
         <span className="font-medium mr-2">username</span>
-        caption
+        {post.caption}
       </p>
       <span onClick={()=> setOpen(true)} className="cursor-pointer text-sm text-gray-400">View all 20 comments</span>
       <CommentDialog open={open} setOpen={setOpen}/>

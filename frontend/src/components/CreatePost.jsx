@@ -9,6 +9,7 @@ import { readFileAsDataURL } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
+
 const CreatePost = ({ open, setOpen }) => {
   const imageRef = useRef();
   const [file, setFile] = useState("");
