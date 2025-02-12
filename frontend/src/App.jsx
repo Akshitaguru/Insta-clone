@@ -11,7 +11,8 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
-          <Route path="profile" element={<Profile />} />
+          {/* Add a dynamic route for the profile */}
+          <Route path="profile/:id" element={<Profile />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
