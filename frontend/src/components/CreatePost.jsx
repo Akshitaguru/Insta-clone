@@ -28,30 +28,41 @@ const CreatePost = ({ open, setOpen }) => {
       setImagePreview(dataUrl);
     }
   }
-
   const createPostHandler = async (e) => {
     const formData = new FormData();
     formData.append("caption", caption);
     if (imagePreview) formData.append("image", file);
     try {
-      setLoading(true);
-      const res = await axios.post('http://localhost:8000/api/v1/post/addpost', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        withCredentials: true
-      });
-      if (res.data.success) {
-        dispatch(setPosts([res.data.post, ...posts]));// [1] -> [1,2] -> total element = 2
-        toast.success(res.data.message);
-        setOpen(false);
-      }
+        setLoading(true);
+        const res = await axios.post('http://localhost:8000/api/v1/post/addpost', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            withCredentials: true
+        });
+
+        // Log the entire response object
+        console.log("Response from server:", res);
+
+        if (res.data.success) {
+            const updatedPosts = Array.isArray(posts) ? [res.data.post, ...posts] : [res.data.post];
+            dispatch(setPosts(updatedPosts));
+            toast.success(res.data.message);
+            setOpen(false);
+        }
     } catch (error) {
-      toast.error(error.response.data.message);
+        console.error("Error occurred:", error);
+        if (error.response) {
+            // Log the error response
+            console.error("Error response from server:", error.response);
+            toast.error(error.response.data.message || "An error occurred");
+        } else {
+            toast.error("An unexpected error occurred");
+        }
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }
+}
 
   return (
     <Dialog open={open}>

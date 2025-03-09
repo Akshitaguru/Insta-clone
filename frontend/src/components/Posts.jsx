@@ -1,16 +1,12 @@
-import React from 'react';
-import Post from './Post';
-import { useSelector } from 'react-redux';
+import React from "react";
+import Post from "./Post";
+import { useSelector } from "react-redux";
 
 const Posts = () => {
-  const storeData = useSelector((store) => store);
-  console.log("Entire Redux store:", storeData);  // Debugging
+  const posts = useSelector((store) => store.post.posts) || [];
 
-  // ✅ Extract posts safely
-  const posts = storeData?.post?.posts || [];  
-
-  if (!Array.isArray(posts) || posts.length === 0) {
-    return <p>Loading posts...</p>;  // ✅ Prevents `.map()` error
+  if (!posts.length) {
+    return <p>Loading posts...</p>;  // Show loading message instead of crashing
   }
 
   return (
@@ -23,4 +19,3 @@ const Posts = () => {
 };
 
 export default Posts;
-
