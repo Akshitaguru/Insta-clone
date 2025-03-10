@@ -29,7 +29,9 @@ const Post = ({post}) => {
             <AvatarImage src={post.author?.profilepicture} alt="post_image" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
+          
           <h1>{post.author?.username}</h1>
+       
         </div>
         <Dialog>
           <DialogTrigger asChild>
