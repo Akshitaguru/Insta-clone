@@ -8,7 +8,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
 import { useState } from "react";
 
-const Post = ({post}) => {
+const Post = ({ post }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -21,6 +21,15 @@ const Post = ({post}) => {
     }
   };
 
+  const postComment = () => {
+    if (text.trim()) {
+      // Add your logic to post the comment here
+      console.log("Posting comment:", text);
+      // Reset the text state after posting
+      setText("");
+    }
+  };
+
   return (
     <div className="my-8 w-full max-w-sm mx-auto">
       <div className="flex items-center justify-between">
@@ -29,9 +38,7 @@ const Post = ({post}) => {
             <AvatarImage src={post.author?.profilepicture} alt="post_image" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          
           <h1>{post.author?.username}</h1>
-       
         </div>
         <Dialog>
           <DialogTrigger asChild>
@@ -47,7 +54,6 @@ const Post = ({post}) => {
             <Button variant="ghost" className="cursor-pointer w-fit ">
               Add to favorites{" "}
             </Button>
-
             <Button variant="ghost" className="cursor-pointer w-fit ">
               Delete{" "}
             </Button>
@@ -59,17 +65,18 @@ const Post = ({post}) => {
         src={post.image}
         alt="post_img "
       />
-
       <div className="flex items-center justify-between my-2">
         <div className="flex items-center gap-3">
           <FaRegHeart
             size={"22px"}
             className="cursor-pointer hover:text-gray-600"
           />
-          <MessageCircle onClick={()=> setOpen(true)} className="cursor-pointer hover:text-gray-600" />
+          <MessageCircle
+            onClick={() => setOpen(true)}
+            className="cursor-pointer hover:text-gray-600"
+          />
           <Send className="cursor-pointer hover:text-gray-600" />
         </div>
-
         <Bookmark className="cursor-pointer hover:text-gray-600" />
       </div>
       <span className="font-medium block mb-2">{post.likes.length} likes</span>
@@ -77,8 +84,13 @@ const Post = ({post}) => {
         <span className="font-medium mr-2">{post.author?.username}</span>
         {post.caption}
       </p>
-      <span onClick={()=> setOpen(true)} className="cursor-pointer text-sm text-gray-400">View all 20 comments</span>
-      <CommentDialog open={open} setOpen={setOpen}/>
+      <span
+        onClick={() => setOpen(true)}
+        className="cursor-pointer text-sm text-gray-400"
+      >
+        View all 20 comments
+      </span>
+      <CommentDialog open={open} setOpen={setOpen} />
       <div className="flex items-center justify-between">
         <input
           type="text"
@@ -87,7 +99,11 @@ const Post = ({post}) => {
           onChange={changeEventHandler}
           className="outline-none text-sm w-full"
         />
-        {text && <span className="text-[#3BADF8]">Post</span>}
+        {text && (
+          <span onClick={postComment} className="text-[#3BADF8] cursor-pointer">
+            Post
+          </span>
+        )}
       </div>
     </div>
   );
