@@ -1,16 +1,21 @@
-import React from 'react'
-import Post from './Post'
-import { useSelector } from 'react-redux'
+import React from "react";
+import Post from "./Post";
+import { useSelector } from "react-redux";
 
 const Posts = () => {
-  const {posts} = useSelector(store=>store.post);
-  return (
-    <div>
-        {
-            posts.map((post) => <Post key={post._id} post={post}/>)
-        }
-    </div>
-  )
-}
+    const posts = useSelector((store) => store.post.posts) || [];
 
-export default Posts
+    if (!posts.length) {
+        return <p>Loading posts...</p>; // Show loading message instead of crashing
+    }
+
+    return (
+        <div>
+            {posts.map((post) => (
+                <Post key={post._id} post={post} />
+            ))}
+        </div>
+    );
+};
+
+export default Posts;
