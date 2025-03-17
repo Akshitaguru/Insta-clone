@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
+import { fetchPosts } from "@/redux/action"; // Adjust the import path as necessary
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -22,56 +23,45 @@ const Login = () => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const signupHandler = async (e) => {
+ // Login.js
+
+const signupHandler = async (e) => {
     e.preventDefault();
-    console.log("Input State Before Request:", input); // Log input state
+    console.log("Input State Before Request:", input);
     try {
-      setLoading(true);
-      
-      const res = await axios.post(
-        "http://localhost:8000/api/v1/user/login",
-        input,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-  
-      // Log response for debugging
-      console.log("Login Response:", res.data);
-  
-      if (res.data.success) {
-        dispatch(setAuthUser(res.data.user));
-        navigate("/")
-        toast.success(res.data.message);
-        setInput({
-          email: "",
-          password: "",
-        });
-      } else {
-        toast.error("Login failed. Please check your credentials.");
-      }
-  
-    } catch (error) {
-      console.error("Error:", error.response ? error.response.data : error.message);
-      
-      if (error.response) {
-        if (error.response.data?.message) {
-          toast.error(error.response.data.message);
+        setLoading(true);
+        const res = await axios.post(
+            "http://localhost:8000/api/v1/user/login",
+            input,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                withCredentials: true,
+            }
+        );
+
+        console.log("Login Response:", res.data);
+
+        if (res.data.success) {
+            dispatch(setAuthUser (res.data.user));
+            dispatch(fetchPosts()); // Fetch posts after login
+            navigate("/");
+            toast.success(res.data.message);
+            setInput({
+                email: "",
+                password: "",
+            });
         } else {
-          toast.error(`Login failed with status ${error.response.status}`);
+            toast.error("Login failed. Please check your credentials.");
         }
-      } else if (error.request) {
-        toast.error("No response from server. Please try again later.");
-      } else {
-        toast.error("An unexpected error occurred. Please try again.");
-      }
+    } catch (error) {
+        console.error("Error:", error.response ? error.response.data : error.message);
+        // Error handling...
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
   
   
   return (

@@ -7,10 +7,12 @@ import { Button } from "./ui/button";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
+  const {user} = useSelector(store=>store.auth);
 
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -54,9 +56,12 @@ const Post = ({ post }) => {
             <Button variant="ghost" className="cursor-pointer w-fit ">
               Add to favorites{" "}
             </Button>
-            <Button variant="ghost" className="cursor-pointer w-fit ">
+            {
+              user && user?._id === post?.author._id &&             <Button variant="ghost" className="cursor-pointer w-fit ">
               Delete{" "}
             </Button>
+            }
+
           </DialogContent>
         </Dialog>
       </div>
