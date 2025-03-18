@@ -15,8 +15,8 @@ const useGetAllPost = () => {
                 const res = await axios.get('http://localhost:8000/api/v1/post/all', { withCredentials: true });
                 console.log("API Response:", res.data); // Log the entire response
                 if (res.data.success) { 
-                    console.log("Posts fetched:", res.data.post); // This will log an empty array if there are no posts
-                    dispatch(setPosts(res.data.post)); // Dispatch the empty array
+                    console.log("Posts fetched:", res.data.posts); // This will log an empty array if there are no posts
+                    dispatch(setPosts(res.data.posts)); // Dispatch the empty array
                 } else {
                     setError("Failed to fetch posts.");
                 }

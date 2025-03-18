@@ -19,7 +19,7 @@ export const addNewPost = async (req, res) => {
     .toBuffer();  
 
     // buffer to data uri
-    const fileUri = `data:iage/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
+    const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
     const cloudResponse = await cloudinary.uploader.upload(fileUri);
     const post = await Post.create({
         caption,
@@ -48,18 +48,17 @@ export const addNewPost = async (req, res) => {
 
 export const getAllPost = async (req,res) => {
     try {
-       const post = await Post.find({createdAt:-1})
-       .populate({path:'author' , select:'username profilePicture'})
-       .populate({
-        path: 'comments',
-        sort:{createdAt:-1},
-        populate:{
-            path: 'author',
-            select: 'username profilePicture'
-        }
-       });
+        const posts = await Post.find()
+        .sort({ createdAt: -1 })
+        .populate({ path: 'author', select: 'username profilePicture' })
+        .populate({
+          path: 'comments',
+          sort: { createdAt: -1 },
+          populate: { path: 'author', select: 'username profilePicture' },
+        });
+      
        return res.status(200).json({
-        post,
+        posts,
         success:true
        });
     }
@@ -79,7 +78,7 @@ export const getUserPost = async (req,res) => {
         sort:{createdAt:-1},
         populate:{
             path: 'author',
-            select: 'username, profilePicture'
+            select: 'username profilePicture'
         }
         });
         return res.status(200).json({
