@@ -1,4 +1,3 @@
-// src/redux/postSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const postSlice = createSlice({
@@ -10,9 +9,12 @@ const postSlice = createSlice({
     },
     reducers: {
         setPosts: (state, action) => {
-            state.posts = action.payload;
-        },
-        // Add these reducers to handle the fetch actions
+            if (Array.isArray(action.payload)) {
+                return { ...state, posts: action.payload }; // Explicitly return new state
+            } else {
+                console.error('Payload is not an array:', action.payload);
+            }
+        },        
         fetchPostsRequest: (state) => {
             state.loading = true;
         },

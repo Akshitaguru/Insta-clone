@@ -10,25 +10,43 @@ const useGetAllPost = () => {
 
     useEffect(() => {
         const fetchAllPost = async () => {
-            setLoading(true);
+            setLoading(true); // Set loading to true at the start
             try {
                 const res = await axios.get('http://localhost:8000/api/v1/post/all', { withCredentials: true });
-                console.log("API Response:", res.data); // Log the entire response
-                if (res.data.success) { 
-                    console.log("Posts fetched:", res.data.posts); // This will log an empty array if there are no posts
-                    dispatch(setPosts(res.data.posts)); // Dispatch the empty array
+                console.log("API response data:", res.data); // Log the entire response data
+
+                // Check if the response is successful and if posts is an array
+                if (res.data.success && Array.isArray(res.data.posts)) {
+                    console.log("Valid posts data:", res.data.posts); // Log valid posts
+                    console.log("Posts to dispatch:", res.data.posts); // Log posts before dispatching
+                    dispatch(setPosts(res.data.posts)); // Dispatch only if posts is an array
                 } else {
-                    setError("Failed to fetch posts.");
+                    console.error("Invalid posts data:", res.data.posts);
+                    setError("Invalid posts data received from the server.");
                 }
             } catch (error) {
-                console.error("Fetch error:", error); // Log the error
-                setError("An error occurred while fetching posts.");
+                // Improved error handling
+                if (axios.isAxiosError(error)) {
+                    if (error.response) {
+                        console.error("Fetch error:", error.response.data);
+                        setError(`Error: ${error.response.status} - ${error.response.data.message || 'An error occurred'}`);
+                    } else if (error.request) {
+                        console.error("Fetch error: No response received", error.request);
+                        setError("No response received from the server.");
+                    } else {
+                        console.error("Fetch error:", error.message);
+                        setError(`Error: ${error.message}`);
+                    }
+                } else {
+                    console.error("Fetch error:", error);
+                    setError("An unexpected error occurred.");
+                }
             } finally {
-                setLoading(false);
+                setLoading(false); // Set loading to false after the fetch is complete
             }
         };
         fetchAllPost();
-    }, [dispatch]); // Add dispatch to the dependency array
+    }, [dispatch]);
 
     return { loading, error };
 };
