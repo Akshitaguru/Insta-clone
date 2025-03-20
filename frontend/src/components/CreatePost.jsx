@@ -38,7 +38,8 @@ const CreatePost = ({ open, setOpen }) => {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
-            withCredentials: true
+            withCredentials: true,
+            timeout: 300000
         });
 
         // Log the entire response object
