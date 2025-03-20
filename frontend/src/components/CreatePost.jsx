@@ -45,8 +45,12 @@ const CreatePost = ({ open, setOpen }) => {
         console.log("Response from server:", res);
 
         if (res.data.success) {
-            const updatedPosts = Array.isArray(posts) ? [res.data.post, ...posts] : [res.data.post];
-            dispatch(setPosts(updatedPosts));
+          const updatedPosts = Array.isArray(posts) 
+          ? [res.data.post, ...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) 
+          : [res.data.post];
+        
+        dispatch(setPosts(updatedPosts));
+        
             toast.success(res.data.message);
             setOpen(false);
         }
