@@ -8,6 +8,8 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -31,6 +33,21 @@ const Post = ({ post }) => {
       setText("");
     }
   };
+
+ 
+  const deletePostHandler = async () => {
+    try {
+        const res = await axios.delete(`http://localhost:8000/api/v1/post/delete/${post._id}`, { withCredentials: true })
+        if (res.data.success) {
+            //const updatedPostData = posts.filter((postItem) => postItem?._id !== post?._id);
+            //dispatch(setPosts(updatedPostData));
+            toast.success(res.data.message);
+        }
+    } catch (error) {
+        console.log(error);
+        toast.error(error.response.data.messsage);
+    }
+}
 
   return (
     <div className="my-8 w-full max-w-sm mx-auto">
@@ -57,7 +74,7 @@ const Post = ({ post }) => {
               Add to favorites{" "}
             </Button>
             {
-              user && user?._id === post?.author._id &&             <Button variant="ghost" className="cursor-pointer w-fit ">
+              user && user?._id === post?.author._id &&  <Button onClick={deletePostHandler} variant="ghost" className="cursor-pointer w-fit ">
               Delete{" "}
             </Button>
             }
