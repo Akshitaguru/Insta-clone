@@ -48,6 +48,12 @@ const Post = ({ post }) => {
         const updatedLikes = liked ? postLike -1 : postLike +1;
         setPostLike(updatedLikes);
         setLiked(!liked);
+        const updatedPostData = posts.map(p=>
+          p._id === post._id ? {
+            ...p,
+            likes: liked ? p.likes.filter(id => id !== user._id) : [...p.likes, user._id]
+          } : p
+        )
         toast.success(res.data.message);
       }
     }
