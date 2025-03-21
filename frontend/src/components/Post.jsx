@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
+import { setPosts } from "@/redux/postSlice";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -53,7 +54,8 @@ const Post = ({ post }) => {
             ...p,
             likes: liked ? p.likes.filter(id => id !== user._id) : [...p.likes, user._id]
           } : p
-        )
+        );
+        dispatch(setPosts(updatedPostData));
         toast.success(res.data.message);
       }
     }
@@ -116,10 +118,13 @@ const Post = ({ post }) => {
       />
       <div className="flex items-center justify-between my-2">
         <div className="flex items-center gap-3">
-          <FaRegHeart onClick={likeOrDislikeHandler}
-            size={"22px"}
-            className="cursor-pointer hover:text-gray-600"
-          />
+          {
+             liked ? <FaHeart onClick={likeOrDislikeHandler} size={'24'} className='cursor-pointer text-red-600'/> : <FaRegHeart onClick={likeOrDislikeHandler}
+             size={"22px"}
+             className="cursor-pointer hover:text-gray-600"
+           />
+          }
+          
           <MessageCircle
             onClick={() => setOpen(true)}
             className="cursor-pointer hover:text-gray-600"
