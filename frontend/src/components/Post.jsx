@@ -16,6 +16,8 @@ const Post = ({ post }) => {
   const [open, setOpen] = useState(false);
   const {user} = useSelector(store=>store.auth);
   const {posts} = useSelector(store=>store.post);
+  const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
+  const [postLike, setPostLike] = useState(post.likes.length);
   const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
@@ -27,6 +29,8 @@ const Post = ({ post }) => {
     }
   };
 
+
+
   const postComment = () => {
     if (text.trim()) {
       // Add your logic to post the comment here
@@ -36,10 +40,25 @@ const Post = ({ post }) => {
     }
   };
 
+  const likeOrDislikeHandler = async () => {
+    try{
+      const action = liked ? 'dislike' : 'like';
+      const res = await axios.get(`http://localhost:8000/api/v1/post/${post._id}/${action}`, { withCredentials : true});
+      if(res.data.success) {
+        const updatedLikes = liked ? postLike -1 : postLike +1;
+        setPostLike(updatedLikes);
+        setLiked(!liked);
+        toast.success(res.data.message);
+      }
+    }
+    catch(error) {
+      console.log(error);
+    }
+  }
  
   const deletePostHandler = async () => {
     try {
-        const res = await axios.delete(`http://localhost:8000/api/v1/post/delete/${post._id}`, { withCredentials: true })
+        const res = await axios.delete(`http://localhost:8000/api/v1/post/delete/${post?._id}`, { withCredentials: true })
         if (res.data.success) {
             const updatedPostData = posts.filter((postItem) => postItem?._id !== post?._id);
             dispatch(setPosts(updatedPostData));
@@ -91,7 +110,7 @@ const Post = ({ post }) => {
       />
       <div className="flex items-center justify-between my-2">
         <div className="flex items-center gap-3">
-          <FaRegHeart
+          <FaRegHeart onClick={likeOrDislikeHandler}
             size={"22px"}
             className="cursor-pointer hover:text-gray-600"
           />
@@ -103,7 +122,7 @@ const Post = ({ post }) => {
         </div>
         <Bookmark className="cursor-pointer hover:text-gray-600" />
       </div>
-      <span className="font-medium block mb-2">{post.likes.length} likes</span>
+      <span className="font-medium block mb-2">{postLike} likes</span>
       <p>
         <span className="font-medium mr-2">{post.author?.username}</span>
         {post.caption}
