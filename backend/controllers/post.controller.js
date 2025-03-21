@@ -14,9 +14,10 @@ export const addNewPost = async (req, res) => {
 
     // image upload
     const optimizedImageBuffer = await sharp(image.buffer)
-    .resize({width:800, height:800, fit: 'inside'})
-    .toFormat('jpeg', {quality:80})
-    .toBuffer();  
+    .resize({ width: 500, height: 500, fit: 'inside' }) // Reduce size
+    .jpeg({ quality: 70 }) // Lower quality to reduce file size
+    .toBuffer();
+
 
     // buffer to data uri
     const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
