@@ -67,7 +67,7 @@ const Post = ({ post }) => {
 
   const commentHandler = async () => {
     try {
-       const res = await axios.delete(`http://localhost:8000/api/v1/post/${post._id}/comment`, {text}, {
+       const res = await axios.post(`http://localhost:8000/api/v1/post/${post._id}/comment`, {text}, {
         headers:{
           'Content-Type':'application/json'
         },
@@ -80,7 +80,7 @@ const Post = ({ post }) => {
 const updatedPostData = posts.map(p=>
   p._id === post._id ? {...p, comments:updatedCommentData} : p
 );
-
+ dispatch(setPosts(updatedPostData));
 
         toast.success(res.data.message);
        }
@@ -167,7 +167,7 @@ const updatedPostData = posts.map(p=>
         onClick={() => setOpen(true)}
         className="cursor-pointer text-sm text-gray-400"
       >
-        View all 20 comments
+        View all {comment.length} comments
       </span>
       <CommentDialog open={open} setOpen={setOpen} />
       <div className="flex items-center justify-between">
@@ -179,7 +179,7 @@ const updatedPostData = posts.map(p=>
           className="outline-none text-sm w-full"
         />
         {text && (
-          <span onClick={postComment} className="text-[#3BADF8] cursor-pointer">
+          <span onClick={commentHandler} className="text-[#3BADF8] cursor-pointer">
             Post
           </span>
         )}
