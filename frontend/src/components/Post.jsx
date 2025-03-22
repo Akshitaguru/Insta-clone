@@ -19,6 +19,7 @@ const Post = ({ post }) => {
   const {posts} = useSelector(store=>store.post);
   const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
   const [postLike, setPostLike] = useState(post.likes.length);
+  const [comment, setComment] = useState(post.comments);
   const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
@@ -60,6 +61,30 @@ const Post = ({ post }) => {
       }
     }
     catch(error) {
+      console.log(error);
+    }
+  }
+
+  const commentHandler = async () => {
+    try {
+       const res = await axios.delete(`http://localhost:8000/api/v1/post/${post._id}/comment`, {text}, {
+        headers:{
+          'Content-Type':'application/json'
+        },
+        withCredentials:true
+       });
+       if(res.data.success){
+        const updatedCommentData = [...comment, res.data.message];
+        setComment(updatedCommentData);
+
+const updatedPostData = posts.map(p=>
+  p._id === post._id ? {...p, comments:updatedCommentData} : p
+);
+
+
+        toast.success(res.data.message);
+       }
+    } catch (error) {
       console.log(error);
     }
   }
