@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setAuthUser } from "@/redux/authSlice";
 import { useState } from "react";
 import CreatePost from "./CreatePost";
+import { setPosts, setSelectedPost } from "@/redux/postSlice";
 
 
 
@@ -32,6 +33,8 @@ const Leftsidebar = () => {
       console.log('Logout response:', res); // Add this line to log the response
       if (res && res.data && res.data.success) { // Add checks for res and res.data
         dispatch(setAuthUser(null));
+        dispatch(setSelectedPost(null));
+        dispatch(setPosts([]));
         navigate("/login");
 
         toast.success(res.data.message);
