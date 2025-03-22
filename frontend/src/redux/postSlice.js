@@ -4,6 +4,7 @@ const postSlice = createSlice({
     name: 'post',
     initialState: {
         posts: [],
+        selectedPost: null,
         loading: false,
         error: null,
     },
@@ -14,7 +15,12 @@ const postSlice = createSlice({
             } else {
                 console.error('Payload is not an array:', action.payload);
             }
-        },        
+        }, 
+        
+        setSelectedPost: (state,action) => {
+       state.selectedPost = action.payload;
+        },
+
         fetchPostsRequest: (state) => {
             state.loading = true;
         },
@@ -29,5 +35,5 @@ const postSlice = createSlice({
     },
 });
 
-export const { setPosts, fetchPostsRequest, fetchPostsSuccess, fetchPostsFailure } = postSlice.actions;
+export const { setPosts, setSelectedPost, fetchPostsRequest, fetchPostsSuccess, fetchPostsFailure } = postSlice.actions;
 export default postSlice.reducer;

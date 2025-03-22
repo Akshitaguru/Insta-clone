@@ -5,9 +5,14 @@ import { Link } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import store from "@/redux/store";
+import { comment } from "postcss";
+import Comment from "./Comment";
 
 const CommentDialog = ({ open, setOpen }) => {
   const [text, setText] = useState("");
+  const { selectedPost } = useSelector((store) => store.post);
 
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -31,7 +36,7 @@ const CommentDialog = ({ open, setOpen }) => {
         <div className="flex flex-1">
           <div className="w-1/2">
             <img
-              src="https://images.unsplash.com/photo-1732919258529-44f50088aefd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw3fHx8ZW58MHx8fHx8"
+             src={selectedPost?.image}
               alt="post_img"
               className="w-full h-full object-cover rounded-l-lg"
             />
@@ -42,12 +47,12 @@ const CommentDialog = ({ open, setOpen }) => {
               <div className="flex gap-3 items-center">
                 <Link>
                   <Avatar>
-                    <AvatarImage />
+                    <AvatarImage src={selectedPost?.author?.profilePicture}/>
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </Link>
                 <div>
-                  <Link className="font-semibold text-xs">username</Link>
+                  <Link className="font-semibold text-xs">{selectedPost?.author?.username}</Link>
                   {/* <span className="text-gray-600 text-sm">bio here...</span> */}
                 </div>
               </div>
@@ -66,7 +71,9 @@ const CommentDialog = ({ open, setOpen }) => {
               </Dialog>
             </div>
             <hr />
-            <div className="flex-1 overflow-y-auto max-h-96 p-4">
+            <div className="flex-1 overflow-y-auto max-h-96 p-4"> {
+              selectedPost?.comments.map((comment)=> <Comment key={comment._id} comment={comment}/>)
+              }
               comments aayenge
             </div>
             <div className="p-4">
