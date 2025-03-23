@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-// import { Dialog } from "@radix-ui/react-dialog";
+//import { Dialog } from "@radix-ui/react-dialog";
 import React from "react";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import { Bookmark, MessageCircle, MoreHorizontal, Send } from "lucide-react";
+import { Badge, Bookmark, MessageCircle, MoreHorizontal, Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
+
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -117,7 +118,10 @@ const Post = ({ post }) => {
             <AvatarImage src={post.author?.profilepicture} alt="post_image" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <h1>{post.author?.username}</h1>
+          <div className="flex items-center gap-3">
+         <h1>{post.author?.username}</h1>
+         {user?._id === post.author._id && <Badge variant="secondary">Author</Badge>}
+          </div>
         </div>
         <Dialog>
           <DialogTrigger asChild>
