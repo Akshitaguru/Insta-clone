@@ -1,25 +1,27 @@
-import React from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { useSelector } from 'react-redux';
-
-import store from '@/redux/store';
+import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const RightSidebar = () => {
-  // const { user } = useSelector(store=>store.auth);
+  const { user } = useSelector((store) => store.auth);
   return (
-    <div>
-      {/* <div className="flex items-center gap-2">
+    <div className="w-fit my-10 pr-32">
+      <div className="flex items-center gap-2">
+        <Link to={`/profile/${user?._id}`}>
           <Avatar>
             <AvatarImage src={user?.profilepicture} alt="post_image" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className="flex items-center gap-3">
-         <h1>{user?.username}</h1>
-         {user?._id === post.author._id && <Badge variant="secondary">Author</Badge>}
-          </div>
-        </div> */}
-    </div>
-  )
-}
+        </Link>
 
-export default RightSidebar
+        <div >
+          <h1 className="font-semibold text-sm"><Link to={`/profile/${user?._id}`}>{user?.username}</Link></h1>
+          <span className="text-gray-600 text-snm">{user?.bio || "Bio here..."}</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RightSidebar;
