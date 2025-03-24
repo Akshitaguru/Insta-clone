@@ -2,7 +2,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 //import { Dialog } from "@radix-ui/react-dialog";
 import React from "react";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import { Badge, Bookmark, MessageCircle, MoreHorizontal, Send } from "lucide-react";
+import {
+  Bookmark,
+  MessageCircle,
+  MoreHorizontal,
+  Send,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
@@ -11,14 +16,14 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
-
+import { Badge } from "./ui/badge";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
   const { posts } = useSelector((store) => store.post);
-  const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
+  const [liked, setLiked] = useState(post.likes.includes(user._id) || false);
   const [postLike, setPostLike] = useState(post.likes.length);
   const [comment, setComment] = useState(post.comments);
   const dispatch = useDispatch();
@@ -31,8 +36,6 @@ const Post = ({ post }) => {
       setText("");
     }
   };
-
- 
 
   const likeOrDislikeHandler = async () => {
     try {
@@ -119,8 +122,10 @@ const Post = ({ post }) => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div className="flex items-center gap-3">
-         <h1>{post.author?.username}</h1>
-         {user?._id === post.author._id && <Badge variant="secondary">Author</Badge>}
+            <h1>{post.author?.username}</h1>
+            {user?._id === post?.author?._id && (
+              <Badge variant="secondary">Author</Badge>
+            )}
           </div>
         </div>
         <Dialog>
@@ -137,15 +142,9 @@ const Post = ({ post }) => {
             <Button variant="ghost" className="cursor-pointer w-fit ">
               Add to favorites{" "}
             </Button>
-            {user && user?._id === post?.author._id && (
-              <Button
-                onClick={deletePostHandler}
-                variant="ghost"
-                className="cursor-pointer w-fit "
-              >
-                Delete{" "}
-              </Button>
-            )}
+            
+            user && user?._id === post?.author._id && <Button onClick={deletePostHandler} variant='ghost' className="cursor-pointer w-fit">Delete</Button>
+            
           </DialogContent>
         </Dialog>
       </div>
@@ -186,8 +185,8 @@ const Post = ({ post }) => {
         <span className="font-medium mr-2">{post.author?.username}</span>
         {post.caption}
       </p>
-      {
-        comment.length > 0 && ( <span
+      {comment.length > 0 && (
+        <span
           onClick={() => {
             dispatch(setSelectedPost(post));
             setOpen(true);
@@ -195,9 +194,9 @@ const Post = ({ post }) => {
           className="cursor-pointer text-sm text-gray-400"
         >
           View all {comment.length} comments
-        </span>)
-      }
-     
+        </span>
+      )}
+
       <CommentDialog open={open} setOpen={setOpen} />
       <div className="flex items-center justify-between">
         <input
