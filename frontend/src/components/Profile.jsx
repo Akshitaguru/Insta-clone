@@ -104,6 +104,7 @@ const Profile = () => {
             </div>
           </section>
         </div>
+        post
       </div>
     </div>
   );
