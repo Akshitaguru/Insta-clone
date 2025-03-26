@@ -7,11 +7,13 @@ import { useParams } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { AtSign } from "lucide-react";
+import { useState } from "react";
 
 const Profile = () => {
   const params = useParams();
   const userId = params.id;
   useGetUserProfile(userId);
+  const [activeTab, setActiveTab] = useState('posts');
 
   const { userProfile } = useSelector((store) => store.auth);
   const isLoggedInUserProfle = true;
@@ -95,16 +97,27 @@ const Profile = () => {
               </div>
               <div className="flex flex-col gap-1">
                 <span className="font-semibold">
-                  {userProfile?.bio || 'bio here...'}
+                  {userProfile?.bio || "bio here..."}
                 </span>
-                <Badge className="w-fit" variant='secondary'><AtSign/> <span className="pl-1">{userProfile?.username}</span></Badge>
+                <Badge className="w-fit" variant="secondary">
+                  <AtSign />{" "}
+                  <span className="pl-1">{userProfile?.username}</span>
+                </Badge>
                 <span>🤯Code with Coffee!!</span>
                 <span>DM for collaboration</span>
               </div>
             </div>
           </section>
         </div>
-        post
+        <div className="border-t border-t-gray-200">
+          <div className="flex items-center justify-center gap-10 text-sm">
+            <span className="py-3 cursor-pointer">POSTS</span>
+            <span className="py-3 cursor-pointer">SAVED</span>
+            <span className="py-3 cursor-pointer">REELS</span>
+            <span className="py-3 cursor-pointer">TAGS</span>
+          </div>
+
+        </div>
       </div>
     </div>
   );
