@@ -24,6 +24,8 @@ const handleTabChange = (tab) => {
   setActiveTab(tab);
 }
 
+const displayedPost = activeTab == `posts` ? userProfile?.posts : userProfile?.bookmarks
+
   return (
     <div className="flex max-w-5xl justify-center mx-auto pl-10">
       <div className="flex flex-col gap-20 p-8">
@@ -121,7 +123,17 @@ const handleTabChange = (tab) => {
             <span className="py-3 cursor-pointer">REELS</span>
             <span className="py-3 cursor-pointer">TAGS</span>
           </div>
-
+<div>
+  {
+    displayedPost?.map((post) => {
+      return (
+        <div key={post?._id}>
+         <img src={post.image} alt='postimage' className="rounded-sm my-2 w-full aspect-square object-cover"/>
+          </div>
+      )
+    })
+  }
+</div>
         </div>
       </div>
     </div>
