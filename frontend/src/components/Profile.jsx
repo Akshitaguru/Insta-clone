@@ -18,7 +18,12 @@ const Profile = () => {
   const { userProfile } = useSelector((store) => store.auth);
   const isLoggedInUserProfle = true;
   const isFollowing = false;
-  console.log(userProfile);
+  // console.log(userProfile);
+
+const handleTabChange = (tab) => {
+  setActiveTab(tab);
+}
+
   return (
     <div className="flex max-w-5xl justify-center mx-auto pl-10">
       <div className="flex flex-col gap-20 p-8">
@@ -111,8 +116,8 @@ const Profile = () => {
         </div>
         <div className="border-t border-t-gray-200">
           <div className="flex items-center justify-center gap-10 text-sm">
-            <span className="py-3 cursor-pointer">POSTS</span>
-            <span className="py-3 cursor-pointer">SAVED</span>
+            <span className={`py-3 cursor-pointer  ${activeTab == 'posts' ? `font-bold` : ''}`} onClick={()=>handleTabChange('posts')}>POSTS</span>
+            <span className={`py-3 cursor-pointer  ${activeTab == 'saved' ? `font-bold` : ''}`} onClick={()=>handleTabChange('saved')}>SAVED</span>
             <span className="py-3 cursor-pointer">REELS</span>
             <span className="py-3 cursor-pointer">TAGS</span>
           </div>
