@@ -13,18 +13,19 @@ const Profile = () => {
   const params = useParams();
   const userId = params.id;
   useGetUserProfile(userId);
-  const [activeTab, setActiveTab] = useState('posts');
+  const [activeTab, setActiveTab] = useState("posts");
 
   const { userProfile } = useSelector((store) => store.auth);
   const isLoggedInUserProfle = true;
   const isFollowing = false;
   // console.log(userProfile);
 
-const handleTabChange = (tab) => {
-  setActiveTab(tab);
-}
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
 
-const displayedPost = activeTab == `posts` ? userProfile?.posts : userProfile?.bookmarks
+  const displayedPost =
+    activeTab == `posts` ? userProfile?.posts : userProfile?.bookmarks;
 
   return (
     <div className="flex max-w-5xl justify-center mx-auto pl-10">
@@ -118,26 +119,45 @@ const displayedPost = activeTab == `posts` ? userProfile?.posts : userProfile?.b
         </div>
         <div className="border-t border-t-gray-200">
           <div className="flex items-center justify-center gap-10 text-sm">
-            <span className={`py-3 cursor-pointer  ${activeTab == 'posts' ? `font-bold` : ''}`} onClick={()=>handleTabChange('posts')}>POSTS</span>
-            <span className={`py-3 cursor-pointer  ${activeTab == 'saved' ? `font-bold` : ''}`} onClick={()=>handleTabChange('saved')}>SAVED</span>
+            <span
+              className={`py-3 cursor-pointer  ${
+                activeTab == "posts" ? `font-bold` : ""
+              }`}
+              onClick={() => handleTabChange("posts")}
+            >
+              POSTS
+            </span>
+            <span
+              className={`py-3 cursor-pointer  ${
+                activeTab == "saved" ? `font-bold` : ""
+              }`}
+              onClick={() => handleTabChange("saved")}
+            >
+              SAVED
+            </span>
             <span className="py-3 cursor-pointer">REELS</span>
             <span className="py-3 cursor-pointer">TAGS</span>
           </div>
-<div>
-  {
-    displayedPost?.map((post) => {
-      return (
-        <div key={post?._id}>
-         <img src={post.image} alt='postimage' className="rounded-sm my-2 w-full aspect-square object-cover"/>
-          </div>
-      )
-    })
-  }
+          <div className="grid grid-cols-3 gap-1">
+  {displayedPost?.map((post) => {
+    return (
+      <div key={post?._id} className="relative group cursor-pointer">
+        <img
+          src={post.image}
+          alt="postimage"
+          className="rounded-sm my-2 w-full aspect-square object-cover"
+        />
+        <div className="rounded inset-0 flex items-center justify-center bg-black bg-opacity-50 group-hover:opacity-100 transition-opacity duration-300">
+        </div>
+      </div>
+    );
+  })}
 </div>
+
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile
