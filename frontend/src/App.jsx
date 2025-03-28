@@ -45,8 +45,10 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
+
           {/* Add a dynamic route for the profile */}
           <Route path="profile/:id" element={<Profile />} />
+          <Route path="/account/edit" element={<EditProfile />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
