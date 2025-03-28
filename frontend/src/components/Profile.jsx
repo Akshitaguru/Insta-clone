@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { AtSign } from "lucide-react";
+import { AtSign, Heart, MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 const Profile = () => {
@@ -139,25 +139,34 @@ const Profile = () => {
             <span className="py-3 cursor-pointer">TAGS</span>
           </div>
           <div className="grid grid-cols-3 gap-1">
-  {displayedPost?.map((post) => {
-    return (
-      <div key={post?._id} className="relative group cursor-pointer">
-        <img
-          src={post.image}
-          alt="postimage"
-          className="rounded-sm my-2 w-full aspect-square object-cover"
-        />
-        <div className="rounded inset-0 flex items-center justify-center bg-black bg-opacity-50 group-hover:opacity-100 transition-opacity duration-300">
-        </div>
-      </div>
-    );
-  })}
-</div>
-
+            {displayedPost?.map((post) => {
+              return (
+                <div key={post?._id} className="relative group cursor-pointer">
+                  <img
+                    src={post.image}
+                    alt="postimage"
+                    className="rounded-sm my-2 w-full aspect-square object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="flex items-center text-white space-x-4">
+                      <Button className="flex items-center gap-2 hover:text-gray-300">
+                        <Heart />
+                        <span>{post?.likes.length}</span>
+                      </Button>
+                      <Button className="flex items-center gap-2 hover:text-gray-300">
+                        <MessageCircle />
+                        <span>{post?.comments.length}</span>
+                      </Button>
+                    </div>
+                  </div>
+                </div> 
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;
