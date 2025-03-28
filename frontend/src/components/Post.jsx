@@ -143,7 +143,12 @@ const Post = ({ post }) => {
               Add to favorites{" "}
             </Button>
             
-            user && user?._id === post?.author._id && <Button onClick={deletePostHandler} variant='ghost' className="cursor-pointer w-fit">Delete</Button>
+            {user && user?._id === post?.author._id && (
+  <Button onClick={deletePostHandler} variant='ghost' className="cursor-pointer w-fit">
+    Delete
+  </Button>
+)}
+
             
           </DialogContent>
         </Dialog>

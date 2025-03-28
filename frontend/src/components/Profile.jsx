@@ -3,7 +3,7 @@ import store from "@/redux/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import React from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { AtSign, Heart, MessageCircle } from "lucide-react";
@@ -15,8 +15,8 @@ const Profile = () => {
   useGetUserProfile(userId);
   const [activeTab, setActiveTab] = useState("posts");
 
-  const { userProfile } = useSelector((store) => store.auth);
-  const isLoggedInUserProfle = true;
+  const { userProfile, user } = useSelector((store) => store.auth);
+  const isLoggedInUserProfle = user?._id === userProfile?._id;
   const isFollowing = false;
   // console.log(userProfile);
 
@@ -46,12 +46,15 @@ const Profile = () => {
                 <span>{userProfile?.username}</span>
                 {isLoggedInUserProfle ? (
                   <>
-                    <Button
-                      variant="secondary"
-                      className="hover:bg-gray-200 h-8"
-                    >
-                      Edit profile
-                    </Button>
+                    <Link to="/account/edit">
+                      <Button
+                        variant="secondary"
+                        className="hover:bg-gray-200 h-8"
+                      >
+                        Edit profile
+                      </Button>
+                    </Link>
+
                     <Button
                       variant="secondary"
                       className="hover:bg-gray-200 h-8"
@@ -159,7 +162,7 @@ const Profile = () => {
                       </button>
                     </div>
                   </div>
-                </div> 
+                </div>
               );
             })}
           </div>
