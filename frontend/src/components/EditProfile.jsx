@@ -2,8 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
+import { useRef } from "react";
 
 const EditProfile = () => {
+  const imageRef = useRef();
   const { user } = useSelector((store) => store.auth);
   return (
     <div className="flex max-w-2xl mx-auto pl-10">
@@ -23,8 +25,8 @@ const EditProfile = () => {
               </span>
             </div>
           </div>
-          <input type="file" className="hidden"/>
-          <Button className="bg-[#0095F6] h-8 hover:bg-[#318bc7]">Change Photo</Button>
+          <input ref={imageRef} type="file" className="hidden"/>
+          <Button onClick={ () => imageRef?.current.click()} className="bg-[#0095F6] h-8 hover:bg-[#318bc7]">Change Photo</Button>
         </div>
       </section>
     </div>
