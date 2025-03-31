@@ -52,10 +52,11 @@ const EditProfile = () => {
     try {
       setLoading(true);
       const res = await axios.post('http://localhost:8000/api/v1/user/profile/edit', formData,{
-        headers:{
+        headers:{ 
           'Content-Type': 'multipart/form-data'
         },
-        withCredentials:true
+        withCredentials: true,
+        timeout: 600000
       });
       if(res.data.success) {
         const updatedUserData = {
@@ -70,7 +71,7 @@ const EditProfile = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }

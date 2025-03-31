@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 //import { Dialog } from "@radix-ui/react-dialog";
 import React from "react";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";

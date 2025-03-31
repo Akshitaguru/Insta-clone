@@ -5,6 +5,7 @@ import Signup from "./components/Signup";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import EditProfile from "./components/EditProfile";
+import ChatPage from "./components/ChatPage";
 
 
 const browserRouter = createBrowserRouter([
@@ -24,6 +25,11 @@ const browserRouter = createBrowserRouter([
       {
         path: '/account/edit',
         element: <EditProfile />,
+      },
+
+      {
+        path: '/chat',
+        element: <ChatPage />,
       },
      
     ]
@@ -49,6 +55,7 @@ function App() {
           {/* Add a dynamic route for the profile */}
           <Route path="profile/:id" element={<Profile />} />
           <Route path="/account/edit" element={<EditProfile />} />
+          <Route path="/chat" element={<ChatPage />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

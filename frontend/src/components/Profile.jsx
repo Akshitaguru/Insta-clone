@@ -1,6 +1,6 @@
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import store from "@/redux/store";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
