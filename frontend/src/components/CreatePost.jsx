@@ -35,11 +35,11 @@ const CreatePost = ({ open, setOpen }) => {
     try {
         setLoading(true);
         const res = await axios.post('http://localhost:8000/api/v1/post/addpost', formData, {
-            headers: {
+headers: {
                 'Content-Type': 'multipart/form-data'
-            },
+            },            
             withCredentials: true,
-            timeout: 300000
+            timeout: 600000
         });
 
         // Log the entire response object
