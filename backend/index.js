@@ -7,10 +7,11 @@ import userRoute from "./routes/user.route.js";
 import postRoute from "./routes/post.route.js";
 import messageRoute from "./routes/message.route.js";
 import jwt from "jsonwebtoken";
+import { app, server } from "./socket/socket.js";
 
 dotenv.config({});
 
-const app = express();
+
 const PORT = process.env.PORT || 3000;
 app.use((req, res, next) => {
   req.setTimeout(120000, () => {
@@ -68,7 +69,7 @@ app.use("/api/v1/message", authenticateToken, messageRoute);
 app.use("/api/v1/user", userRoute);
 
 // Start the Server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   connectDB();
   console.log(`Server is listening at port ${PORT}`);
 });
