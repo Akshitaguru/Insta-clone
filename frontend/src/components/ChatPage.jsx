@@ -9,6 +9,7 @@ import Messages from "./Messages";
 import { useState } from "react";
 import { setMessages } from "@/redux/chatSlice";
 import { useEffect } from "react";
+import axios from "axios";
 
 const ChatPage = () => {
   const [textMessage, setTextMessage] = useState("");
