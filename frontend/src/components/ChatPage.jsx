@@ -8,6 +8,7 @@ import { MessageCircle, MessageCircleCode } from "lucide-react";
 import Messages from "./Messages";
 import { useState } from "react";
 import { setMessages } from "@/redux/chatSlice";
+import { useEffect } from "react";
 
 const ChatPage = () => {
   const [textMessage, setTextMessage] = useState("");
@@ -34,6 +35,13 @@ const sendMessageHandler = async (receiverId) => {
     console.log(error);
   }
 }
+
+useEffect(() => {
+  return () => {
+    dispatch(setSelectedUser(null));
+
+  }
+},[]);
 
   return (
     <div className="flex ml-[16%] h-screen">
