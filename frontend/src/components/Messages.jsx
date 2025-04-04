@@ -4,10 +4,12 @@ import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useGetAllMessage from "@/hooks/useGetAllMessage";
+import store from "@/redux/store";
 
 const Messages = ({ selectedUser  }) => {
   useGetAllMessage();
   const { messages } = useSelector(store => store.chat);
+  const { user } = useSelector(store => store.auth);
 
   return (
     <div className="overflow-y-auto flex-1 p-4">
@@ -24,18 +26,17 @@ const Messages = ({ selectedUser  }) => {
         </div>
       </div>  
       <div className="flex flex-col gap-3">
-        {
-          messages && messages.map((msg) => {
-            return (
-              <div key={msg._id} className="flex">
-                <div>
-                  {/* Render specific properties of the message object */}
-                  <strong>{msg.senderId}</strong>: {msg.message} {/* Adjust according to your message structure */}
-                </div>
-              </div>
-            );
-          })
-        }
+      {
+                   messages && messages.map((msg) => {
+                        return (
+                            <div key={msg._id} className={`flex ${msg.senderId === user?._id ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`p-2 rounded-lg max-w-xs break-words ${msg.senderId === user?._id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>
+                                    {msg.message}
+                                </div>
+                            </div>
+                        )
+                    })
+                }
       </div>
     </div>
   );
