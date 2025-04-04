@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import store from "./redux/store";
 import { setSocket } from "./redux/socketSlice";
 import { setOnlineUsers } from "./redux/chatSlice";
+import { setLikeNotification } from "./redux/rtnSlice";
 
 const browserRouter = createBrowserRouter([
   {
@@ -64,14 +65,18 @@ function App() {
         query: {
           userId: user?._id,
         },
-        transports: ["websocket"], // unneccesary api band hojayegi
+        transports: ['websocket'], // unneccesary api band hojayegi
       });
       dispatch(setSocket(socketio));
 
       // listen all the events
-      socketio.on("getOnlineUsers", (onlineUsers) => {
+      socketio.on('getOnlineUsers', (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
       });
+
+      socketio.on('notification', (notification) => {
+        dispatch(setLikeNotification(notification));
+      })
 
       return () => {
         socketio.close();
