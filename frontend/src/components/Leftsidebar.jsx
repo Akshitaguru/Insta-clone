@@ -126,10 +126,9 @@ const Leftsidebar = () => {
                                       }
                                     />
                                   </Avatar>
-                                  <p className="text-sm">
-                                    
-                                    <span className="font-bold">{notification.userDetails?.username}liked your post</span>
-                                  </p>
+                                  <span className="font-bold">
+  {notification.userDetails?.username} </span> liked your post
+
                                 </div>
                               );
                             })

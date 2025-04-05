@@ -18,6 +18,7 @@ import store from "./redux/store";
 import { setSocket } from "./redux/socketSlice";
 import { setOnlineUsers } from "./redux/chatSlice";
 import { setLikeNotification } from "./redux/rtnSlice";
+//import { io } from "socket.io-client";
 
 const browserRouter = createBrowserRouter([
   {
@@ -75,8 +76,10 @@ function App() {
       });
 
       socketio.on('notification', (notification) => {
+        console.log("Notification received:", notification); // Add this
         dispatch(setLikeNotification(notification));
-      })
+      });
+      
 
       return () => {
         socketio.close();
