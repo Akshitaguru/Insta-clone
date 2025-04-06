@@ -76,10 +76,11 @@ const Leftsidebar = () => {
     { icon: <PlusSquare />, text: "Create" },
     {
       icon: (
-        <Avatar className="w-6 h-6">
-          <AvatarImage src={user?.profilePicture} alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <Avatar className='w-6 h-6'>
+                    <AvatarImage src={user?.profilePicture} alt="@shadcn" />
+                    <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+      
       ),
       text: "Profile",
     },

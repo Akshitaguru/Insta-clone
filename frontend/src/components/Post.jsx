@@ -132,8 +132,12 @@ const Post = ({ post }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={post.author?.profilepicture} alt="post_image" />
-            <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={post.author?.profilePicture} alt="post_image" />
+
+<AvatarFallback>
+  {post.author?.username?.slice(0, 2).toUpperCase()}
+</AvatarFallback>
+
           </Avatar>
           <div className="flex items-center gap-3">
             <h1>{post.author?.username}</h1>
@@ -147,12 +151,14 @@ const Post = ({ post }) => {
             <MoreHorizontal className="cursor-pointer" />
           </DialogTrigger>
           <DialogContent className="flex flex-col items-center text-sm text-center">
-            <Button
-              variant="ghost"
-              className="cursor-pointer w-fit text-[#ED4956] font-bold"
-            >
-              Unfollow{" "}
-            </Button>
+          {
+            post?.author?._id !== user?._id &&  <Button
+            variant="ghost"
+            className="cursor-pointer w-fit text-[#ED4956] font-bold"
+          >
+           unfollow
+          </Button>
+          } 
             <Button variant="ghost" className="cursor-pointer w-fit ">
               Add to favorites{" "}
             </Button>

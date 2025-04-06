@@ -39,7 +39,7 @@ headers: {
                 'Content-Type': 'multipart/form-data'
             },            
             withCredentials: true,
-            timeout: 600000
+            timeout: 120000
         });
 
         // Log the entire response object
