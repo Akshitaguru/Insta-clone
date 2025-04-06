@@ -244,31 +244,32 @@ export const deletePost = async (req,res) => {
     }
 }
 
-export const bookmarkPost = async (req,res) => {
-    try{
+export const bookmarkPost = async (req, res) => {
+    try {
         const postId = req.params.id;
-        const authorId = req.id;
+        const authorId = req.id; // Ensure this is set correctly in your middleware
+
         const post = await Post.findById(postId);
-        if(!post) return res.status(404).json({message: 'Post not found', success: false});
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found', success: false });
+        }
 
         const user = await User.findById(authorId);
-        if(user.bookmarks.includes(post._id)){
-               // already bookmarked -> remove from the bookmark
-                await user.updateOne({$pull:{bookmarks:post._id}});
-                await user.save();
-                await res.status(200).json({type: 'unsaved', message: 'Post removed from bookmark', success:true});
-        }
-        else{ 
-             
-             // bookamrk karna padega
-             await user.updateOne({$addToSet:{bookmarks:post._id}});
-             await user.save();
-             await res.status(200).json({type: 'saved', message: 'Post bookmarked', success:true});
-
+        if (!user) {
+            return res.status(404).json({ message: 'User  not found', success: false });
         }
 
+        if (user.bookmarks.includes(post._id)) {
+            // Already bookmarked -> remove from the bookmark
+            await user.updateOne({ $pull: { bookmarks: post._id } });
+            await res.status(200).json({ type: 'unsaved', message: 'Post removed from bookmark', success: true });
+        } else {
+            // Bookmark the post
+            await user.updateOne({ $addToSet: { bookmarks: post._id } });
+            await res.status(200).json({ type: 'saved', message: 'Post bookmarked', success: true });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error", success: false });
     }
-    catch (error) {
-        console.log(error);
-    }
-}
+};
