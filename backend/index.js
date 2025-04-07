@@ -58,10 +58,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Set request timeout to 30 seconds
-app.use((req, res, next) => {
-  req.setTimeout(30000); // 30 seconds
-  next();
-});
+// app.use((req, res, next) => {
+//   req.setTimeout(30000); // 30 seconds
+//   next();
+// });
 
 // Secure API Endpoints
 app.use("/api/v1/post", authenticateToken, postRoute);

@@ -84,7 +84,7 @@ export const getUserPost = async (req,res) => {
         }
         });
         return res.status(200).json({
-            post,
+            posts,
             success:true
            })
     }
