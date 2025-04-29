@@ -5,6 +5,10 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import store from "@/redux/store";
+import { Store } from "lucide-react";
 
 
 const Signup = () => {
@@ -15,6 +19,7 @@ const Signup = () => {
     });
 
       const [loading, setLoading] = useState(false);
+      const {user} = useSelector(store => store.auth);
        const navigate = useNavigate();
   
     const changeEventHandler = (e) => {
@@ -53,7 +58,11 @@ const Signup = () => {
         }
     }
 
-
+useEffect(()=> {
+       if(user) {
+        navigate("/");
+       }
+}, [])
 
 
   return (

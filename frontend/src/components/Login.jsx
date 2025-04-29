@@ -5,9 +5,10 @@ import { Input } from "./ui/input";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 import { fetchPosts } from "@/redux/action"; // Adjust the import path as necessary
+import { useEffect } from "react";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -16,6 +17,7 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const {user} = useSelector(store => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -61,7 +63,13 @@ const signupHandler = async (e) => {
     } finally {
         setLoading(false);
     }
-};
+}
+
+useEffect(()=> {
+       if(user) {
+        navigate("/");
+       }
+}, [])
   
   
   return (
