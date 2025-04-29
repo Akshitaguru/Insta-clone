@@ -1,25 +1,19 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  createBrowserRouter,
-} from "react-router-dom";
-import MainLayout from "./components/MainLayout";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
-import Home from "./components/Home";
-import Profile from "./components/Profile";
-import EditProfile from "./components/EditProfile";
-import ChatPage from "./components/ChatPage";
+import { useEffect } from 'react'
+import ChatPage from './components/ChatPage'
+import EditProfile from './components/EditProfile'
+import Home from './components/Home'
+import Login from './components/Login'
+import MainLayout from './components/MainLayout'
+import Profile from './components/Profile'
+import Signup from './components/Signup'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { io } from "socket.io-client";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import store from "./redux/store";
-import { setSocket } from "./redux/socketSlice";
-import { setOnlineUsers } from "./redux/chatSlice";
-import { setLikeNotification } from "./redux/rtnSlice";
-import ProtectedRoutes from "./components/ProtectedRoutes";
-//import { io } from "socket.io-client";
+import { useDispatch, useSelector } from 'react-redux'
+import { setSocket } from './redux/socketSlice'
+import { setOnlineUsers } from './redux/chatSlice'
+import { setLikeNotification } from './redux/rtnSlice'
+import ProtectedRoutes from './components/ProtectedRoutes'
+
 
 const browserRouter = createBrowserRouter([
   {
@@ -27,47 +21,45 @@ const browserRouter = createBrowserRouter([
     element: <ProtectedRoutes><MainLayout /></ProtectedRoutes>,
     children: [
       {
-        path: "/",
-        element:<ProtectedRoutes> <Home /></ProtectedRoutes>,
+        path: '/',
+        element: <ProtectedRoutes><Home /></ProtectedRoutes>
       },
       {
-        path: "/profile/:id",
-        element:<ProtectedRoutes> <Profile /> </ProtectedRoutes>,
+        path: '/profile/:id',
+        element: <ProtectedRoutes> <Profile /></ProtectedRoutes>
       },
-
       {
-        path: "/account/edit",
-        element: <ProtectedRoutes> <EditProfile /></ProtectedRoutes>,
+        path: '/account/edit',
+        element: <ProtectedRoutes><EditProfile /></ProtectedRoutes>
       },
-
       {
-        path: "/chat",
-        element: <ProtectedRoutes> <ChatPage /></ProtectedRoutes>,
+        path: '/chat',
+        element: <ProtectedRoutes><ChatPage /></ProtectedRoutes>
       },
-    ],
+    ]
   },
   {
-    path: "/login",
-    element: <Login />,
+    path: '/login',
+    element: <Login />
   },
   {
-    path: "/signup",
-    element: <Signup />,
+    path: '/signup',
+    element: <Signup />
   },
-]);
+])
 
 function App() {
   const { user } = useSelector(store => store.auth);
-  const {socket} = useSelector(store=>store.socketio);
+  const { socket } = useSelector(store => store.socketio);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (user) {
       const socketio = io("http://localhost:8000", {
         query: {
-          userId: user?._id,
+          userId: user._id,
         },
-        transports: ['websocket'], // unneccesary api band hojayegi
+        transports: ['websocket']
       });
       dispatch(setSocket(socketio));
 
@@ -77,37 +69,24 @@ function App() {
       });
 
       socketio.on('notification', (notification) => {
-        console.log("Notification received:", notification); // Add this
         dispatch(setLikeNotification(notification));
       });
-      
 
       return () => {
         socketio.close();
         dispatch(setSocket(null));
-      };
-    } else if(socket) {
-      socket?.close();
+      }
+    } else if (socket) {
+      socket.close();
       dispatch(setSocket(null));
     }
   }, [user, dispatch]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />} />
-
-          {/* Add a dynamic route for the profile */}
-          <Route path="profile/:id" element={<Profile />} />
-          <Route path="/account/edit" element={<EditProfile />} />
-          <Route path="/chat" element={<ChatPage />} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
-    </BrowserRouter>
-  );
+    <>
+      <RouterProvider router={browserRouter} />
+    </>
+  )
 }
 
-export default App;
+export default App

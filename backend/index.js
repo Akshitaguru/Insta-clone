@@ -6,71 +6,39 @@ import connectDB from "./utils/db.js";
 import userRoute from "./routes/user.route.js";
 import postRoute from "./routes/post.route.js";
 import messageRoute from "./routes/message.route.js";
-import jwt from "jsonwebtoken";
 import { app, server } from "./socket/socket.js";
-
-dotenv.config({});
+import path from "path";
+ 
+dotenv.config();
 
 
 const PORT = process.env.PORT || 3000;
-app.use((req, res, next) => {
-  req.setTimeout(120000, () => {
-    console.log("Request timed out");
-    res.status(408).json({ error: "Request Timeout" });
-  });
-  next();
-});
 
-// Authentication Middleware
-const authenticateToken = (req, res, next) => {
-  const token = req.cookies.token || req.headers["x-access-token"];
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+const __dirname = path.resolve();
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ error: "Invalid token" });
-    }
-    req.user = decoded; // Add the decoded user info to the request object
-    next();
-  });
-};
-
-// Test Route (No Authentication Required)
-app.get("/", (_, res) => {
-  return res.status(200).json({
-    message: "I'm coming from backend",
-    success: true,
-  });
-});
-
-// Middlewares
-// Middlewares
+//middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
-
 const corsOptions = {
-  origin: "http://localhost:5173",
-  credentials: true,
-};
+    origin: process.env.URL,
+    credentials: true
+}
 app.use(cors(corsOptions));
 
-// Set request timeout to 30 seconds
-// app.use((req, res, next) => {
-//   req.setTimeout(30000); // 30 seconds
-//   next();
-// });
-
-// Secure API Endpoints
-app.use("/api/v1/post", authenticateToken, postRoute);
-app.use("/api/v1/message", authenticateToken, messageRoute);
+// yha pr apni api ayengi
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/post", postRoute);
+app.use("/api/v1/message", messageRoute);
 
-// Start the Server
+
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+app.get("*", (req,res)=>{
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+})
+
+
 server.listen(PORT, () => {
-  connectDB();
-  console.log(`Server is listening at port ${PORT}`);
+    connectDB();
+    console.log(`Server listen at port ${PORT}`);
 });
-
