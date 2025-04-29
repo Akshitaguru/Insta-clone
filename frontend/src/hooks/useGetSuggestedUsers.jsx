@@ -12,7 +12,7 @@ const useGetSuggestedUsers = () => {
         const fetchSuggestedUsers = async () => {
             setLoading(true); // Set loading to true at the start
             try {
-                const res = await axios.get('http://localhost:8000/api/v1/user/suggested', { withCredentials: true });
+                const res = await axios.get('https://insta-clone-yurr.onrender.com/api/v1/user/suggested', { withCredentials: true });
 
                 // Check if the response is successful and if posts is an array
                 if (res.data.success) {

@@ -12,7 +12,7 @@ const useGetAllPost = () => {
         const fetchAllPost = async () => {
             setLoading(true); // Set loading to true at the start
             try {
-                const res = await axios.get('http://localhost:8000/api/v1/post/all', { withCredentials: true });
+                const res = await axios.get('https://insta-clone-yurr.onrender.com/api/v1/post/all', { withCredentials: true });
                 console.log("API response data:", res.data); // Log the entire response data
 
                 // Check if the response is successful and if posts is an array
