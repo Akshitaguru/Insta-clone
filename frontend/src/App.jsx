@@ -10,7 +10,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { io } from "socket.io-client";
 import { useDispatch, useSelector } from 'react-redux'
 import { setSocket } from './redux/socketSlice'
-import { setOnlineUsers } from './redux/chatSlice'
+import { setMessages, setOnlineUsers } from './redux/chatSlice'
 import { setLikeNotification } from './redux/rtnSlice'
 import ProtectedRoutes from './components/ProtectedRoutes'
 import { toast } from 'sonner';
@@ -55,7 +55,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user) {
+    if (user && !socket) {
       const socketio = io("https://insta-clone-yurr.onrender.com", {
         query: {
           userId: user._id,
@@ -63,26 +63,35 @@ function App() {
         transports: ['websocket']
       });
       dispatch(setSocket(socketio));
-
-      // listen all the events
+  
       socketio.on('getOnlineUsers', (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
       });
-
+  
       socketio.on('notification', (notification) => {
+        console.log("Received notification via socket:", notification);
         dispatch(setLikeNotification(notification));
-        toast(`${notification.userDetails?.username} liked your post!`);
+        const username = notification.userDetails?.username || "Someone";
+        toast(`${username} liked your post!`);
       });
-
+  
+      socketio.on('message', (message) => {
+        console.log("Received message via socket:", message);
+        dispatch(setMessages(message));
+        const senderUsername = message.sender?.username || "Unknown sender";
+        toast(`New message from ${senderUsername}: ${message.text}`);
+      });
+  
       return () => {
         socketio.close();
         dispatch(setSocket(null));
       }
-    } else if (socket) {
+    } else if (!user && socket) {
       socket.close();
       dispatch(setSocket(null));
     }
-  }, [user, dispatch]);
+  }, [user, socket, dispatch]);
+  
 
   return (
     <>

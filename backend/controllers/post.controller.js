@@ -35,7 +35,7 @@ export const addNewPost = async (req, res) => {
         await user.save();
     }
     
-    await post.populate({path: 'author', select: '-passward'});
+    await post.populate({path: 'author', select: '-password'});
     
     return res.status(201).json({
         message: 'New post added',
@@ -93,35 +93,36 @@ export const getUserPost = async (req,res) => {
     }
 }
 
-export const likePost = async (req,res) => {
+export const likePost = async (req, res) => {
     try {
-        const likekarnewalauserkiId = req.id;
-        const postId = req.params.id;
+        const likeKrneWalaUserKiId = req.id;
+        const postId = req.params.id; 
         const post = await Post.findById(postId);
-        if(!post) return res.status(404).json({message: 'Post not found', success:false});
+        if (!post) return res.status(404).json({ message: 'Post not found', success: false });
 
         // like logic started
-        await post.updateOne({$addToSet:{likes: likekarnewalauserkiId}});
+        await post.updateOne({ $addToSet: { likes: likeKrneWalaUserKiId } });
         await post.save();
 
-        const user = await User.findById(likekarnewalauserkiId).select('username profilePicture');
+        // implement socket io for real time notification
+        const user = await User.findById(likeKrneWalaUserKiId).select('username profilePicture');
+         
         const postOwnerId = post.author.toString();
-        if(postOwnerId !== likekarnewalauserkiId) {
+        if(postOwnerId !== likeKrneWalaUserKiId){
+            // emit a notification event
             const notification = {
                 type:'like',
-                userId:likekarnewalauserkiId,
+                userId:likeKrneWalaUserKiId,
                 userDetails:user,
                 postId,
                 message:'Your post was liked'
             }
-            const postOwnenSocketId = getReceiverSocketId(postOwnerId);
-            io.to(postOwnenSocketId).emit('notification', notification);
+            const postOwnerSocketId = getReceiverSocketId(postOwnerId);
+            io.to(postOwnerSocketId).emit('notification', notification);
         }
 
-      return res.status(200).json({message: 'Post Liked', success:true});
-    }
-    catch(error)
-    {
+        return res.status(200).json({message:'Post liked', success:true});
+    } catch (error) {
 
     }
 }
@@ -147,7 +148,7 @@ export const dislikePost = async (req,res) => {
                 userId:likekarnewalauserkiId,
                 userDetails:user,
                 postId,
-                message:'Your post was liked'
+                message:'Your post was disliked'
             }
             const postOwnenSocketId = getReceiverSocketId(postOwnerId);
             io.to(postOwnenSocketId).emit('notification', notification);
@@ -200,7 +201,9 @@ export const getCommentsOfPost = async (req,res) => {
 
     try{
         const postId = req.params.id;
-        const comments = await Comment.find({post: postId}).populate('author', 'username profilePicture');
+        const comments = await Comment.find({post: postId})
+        .sort({createdAt: -1})
+        .populate('author', 'username profilePicture');
 
         if(!comments) return res.status(404).json({message: 'No comments found for this post', success:false});
 
