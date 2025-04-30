@@ -55,13 +55,12 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user && !socket) {
+    if (user && user._id) {
       const socketio = io("https://insta-clone-yurr.onrender.com", {
-        query: {
-          userId: user._id,
-        },
+        query: { userId: user._id },
         transports: ['websocket']
       });
+    
       dispatch(setSocket(socketio));
   
       socketio.on('getOnlineUsers', (onlineUsers) => {
