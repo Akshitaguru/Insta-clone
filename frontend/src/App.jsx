@@ -13,6 +13,7 @@ import { setSocket } from './redux/socketSlice'
 import { setOnlineUsers } from './redux/chatSlice'
 import { setLikeNotification } from './redux/rtnSlice'
 import ProtectedRoutes from './components/ProtectedRoutes'
+import { toast } from 'sonner';
 
 
 const browserRouter = createBrowserRouter([
@@ -70,6 +71,7 @@ function App() {
 
       socketio.on('notification', (notification) => {
         dispatch(setLikeNotification(notification));
+        toast(`${notification.userDetails?.username} liked your post!`);
       });
 
       return () => {
