@@ -18,7 +18,10 @@ const Profile = () => {
   const { userProfile, user } = useSelector((store) => store.auth);
   const isLoggedInUserProfle = user?._id === userProfile?._id;
   const isFollowing = false;
-  // console.log(userProfile);
+
+  if (!userProfile) {
+    return <div className="text-center py-10">Loading profile...</div>;
+  }
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
