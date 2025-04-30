@@ -10,10 +10,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { io } from "socket.io-client";
 import { useDispatch, useSelector } from 'react-redux'
 import { setSocket } from './redux/socketSlice'
-import { setMessages, setOnlineUsers } from './redux/chatSlice'
+import { setOnlineUsers } from './redux/chatSlice'
 import { setLikeNotification } from './redux/rtnSlice'
 import ProtectedRoutes from './components/ProtectedRoutes'
-import { toast } from 'sonner';
 
 
 const browserRouter = createBrowserRouter([
@@ -55,42 +54,33 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user && user._id) {
-      const socketio = io("https://insta-clone-yurr.onrender.com", {
-        query: { userId: user._id },
+    if (user) {
+      const socketio = io('http://localhost:8000', {
+        query: {
+          userId: user?._id
+        },
         transports: ['websocket']
       });
-    
       dispatch(setSocket(socketio));
-  
+
+      // listen all the events
       socketio.on('getOnlineUsers', (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
       });
-  
+
       socketio.on('notification', (notification) => {
-        console.log("Received notification via socket:", notification);
         dispatch(setLikeNotification(notification));
-        const username = notification.userDetails?.username || "Someone";
-        toast(`${username} liked your post!`);
       });
-  
-      socketio.on('message', (message) => {
-        console.log("Received message via socket:", message);
-        dispatch(setMessages(message));
-        const senderUsername = message.sender?.username || "Unknown sender";
-        toast(`New message from ${senderUsername}: ${message.text}`);
-      });
-  
+
       return () => {
         socketio.close();
         dispatch(setSocket(null));
       }
-    } else if (!user && socket) {
+    } else if (socket) {
       socket.close();
       dispatch(setSocket(null));
     }
-  }, [user, socket, dispatch]);
-  
+  }, [user, dispatch]);
 
   return (
     <>
